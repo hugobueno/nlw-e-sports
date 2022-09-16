@@ -57,6 +57,7 @@ const Home: NextPage = () => {
                   <Input
                     id="game"
                     placeholder="Selecione o game que deseja jogar"
+                    type={"text"}
                   />
                 </div>
                 <div className="flex flex-col gap-2">

@@ -12,6 +12,7 @@ const prisma = new PrismaClient({
 app.use(express.json())
 app.use(urlencoded({ extended: true }))
 app.use(cors())
+
 app.get("/games", async (req, res) => {
     const games = await prisma.game.findMany({
         include: {
