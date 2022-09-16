@@ -11,12 +11,15 @@ import logoImg from '../../assets/logo-nlw-esports.png'
 import { Heading } from '../../components/Heading';
 import { DuoCard, IDuoCardProps } from '../../components/DuoCard';
 import { api } from '../../utils/api';
+import { DuoMatch } from '../../components/DuoMatch'
 
 export function Game() {
     const [duos, setDuos] = useState<IDuoCardProps[]>([])
     const route = useRoute()
     const game = route.params as GameParams
     const navegation = useNavigation()
+    const [discordDuoSelected, setDiscordDuoSelected] = useState("")
+
     const handleGoBack = () => {
         navegation.goBack()
     }
@@ -25,6 +28,12 @@ export function Game() {
         setDuos(data)
         console.log(data);
     }
+
+    const handleGetDiscordUser = async (adsId: string) => {
+        const { data, status } = await api.get(`ads/${adsId}/discord`)
+        setDiscordDuoSelected(data.discord)
+    }
+
     useEffect(() => {
         handleGetAllAds()
     }, [])
@@ -57,7 +66,10 @@ export function Game() {
                     data={duos}
                     keyExtractor={item => item.id}
                     renderItem={({ item }) => (
-                        <DuoCard onConnect={() => { }} data={item} />
+                        <DuoCard
+                            onConnect={() => handleGetDiscordUser(item.id)}
+                            data={item}
+                        />
                     )}
                     horizontal
                     contentContainerStyle={duos.length > 0 ? styles.contentList : styles.emptyListContent}
@@ -66,6 +78,11 @@ export function Game() {
                     ListEmptyComponent={() => (
                         <Text style={styles.emptyListText}>Não ha anuncios publicado ainda</Text>
                     )}
+                />
+                <DuoMatch
+                    discord={discordDuoSelected}
+                    visible={discordDuoSelected.length > 0}
+                    onClose={() => setDiscordDuoSelected("")}
                 />
             </SafeAreaView>
         </Background>
